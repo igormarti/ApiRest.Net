@@ -7,8 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="db\dataset\V4__Populate_Table_Books.sql" />
+    <None Remove="db\migrations\V3__Create_Table_Books.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="db\dataset\V4__Populate_Table_Books.sql" />
+    <Content Include="db\dataset\V2__Populate_Table_Users.sql" />
+    <Content Include="db\migrations\V3__Create_Table_Books.sql" />
+    <Content Include="db\migrations\V1__Create_Table_Users.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="Evolve" Version="3.2.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+    <PackageReference Include="Serilog" Version="4.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
