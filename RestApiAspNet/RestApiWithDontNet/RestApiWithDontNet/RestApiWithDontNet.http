@@ -1,0 +1,6 @@
+@RestApiWithDontNet_HostAddress = http://localhost:5238
+
+GET {{RestApiWithDontNet_HostAddress}}/api/users
+Accept: application/json
+
+###
