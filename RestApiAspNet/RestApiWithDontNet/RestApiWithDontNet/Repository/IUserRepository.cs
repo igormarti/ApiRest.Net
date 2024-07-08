@@ -1,19 +1,10 @@
 ﻿using RestApiWithDontNet.Models;
+using RestApiWithDontNet.Repository.Generic;
 
 namespace RestApiWithDontNet.Repository
 {
-    public interface IUserRepository
+    public interface IUserRepository:IRepository<User>
     {
-        User Create(User user);
-
-        User Update(long id, User newUser, User oldUser);
-
-        User FindById(long id);
-
-        List<User> FindAll();
-
-        void Delete(long id);
-
-        bool Exists(long id);
+   
     }
 }

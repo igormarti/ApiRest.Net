@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using RestApiWithDontNet.Models.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestApiWithDontNet.Models
 {
     [Table("books")]
-    public class Book
+    public class Book:BaseEntity
     {
-        [Column("id")]
-        public long Id { get; set; }
 
         [Column("title")]
         public string Title { get; set; }
