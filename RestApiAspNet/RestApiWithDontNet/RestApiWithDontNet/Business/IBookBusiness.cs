@@ -1,16 +1,17 @@
-﻿using RestApiWithDontNet.Models;
+﻿using RestApiWithDontNet.Data.VO;
+using RestApiWithDontNet.Models;
 
 namespace RestApiWithDontNet.Business
 {
     public interface IBookBusiness
     {
-        Book Create(Book book);
+        BookVO Create(BookVO book);
 
-        Book Update(long id, Book book);
+        BookVO Update(long id, BookVO book);
 
-        Book FindById(long id);
+        BookVO FindById(long id);
 
-        List<Book> FindAll();
+        List<BookVO> FindAll();
 
         void Delete(long id);
     }

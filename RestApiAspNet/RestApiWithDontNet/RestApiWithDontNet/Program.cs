@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using RestApiWithDontNet.Business;
 using RestApiWithDontNet.Business.Impl;
+using RestApiWithDontNet.Data.Converter.Impl;
 using RestApiWithDontNet.Models.Context;
 using RestApiWithDontNet.Repository;
 using RestApiWithDontNet.Repository.Impl;
@@ -38,6 +39,11 @@ builder.Services.
 builder.Services.
     AddScoped<IUserRepository, UserRepository>()
    .AddScoped<IBookRepository, BookRepository>();
+
+// VO Dependency Injection
+builder.Services.
+    AddScoped<UserParser>()
+    .AddScoped<BookParser>();
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RestApiWithDontNet.Models;
 using RestApiWithDontNet.Business;
+using RestApiWithDontNet.Data.VO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,16 +26,16 @@ namespace RestApiWithDontNet.Controllers
 
         // GET: api/<BookController>
         [HttpGet]
-        public ActionResult<List<Book>> Get()
+        public ActionResult<List<BookVO>> Get()
         {
-            List<Book> books = _bookBusiness.FindAll();
+            List<BookVO> books = _bookBusiness.FindAll();
 
             return Ok(books);
         }
 
         // GET api/<BookController>/5
         [HttpGet("{id}")]
-        public ActionResult<Book> Get(int id)
+        public ActionResult<BookVO> Get(int id)
         {
             try
             {
@@ -47,20 +48,26 @@ namespace RestApiWithDontNet.Controllers
 
         // POST api/<BookController>
         [HttpPost]
-        public ActionResult<Book> Post([FromBody] Book book)
+        public ActionResult<BookVO> Post([FromBody] BookVO book)
         {
             if (book == null) return BadRequest();
-            Book bookCreated = _bookBusiness.Create(book);
-            return CreatedAtAction(nameof(Get), new { id = bookCreated.Id }, bookCreated);
+            BookVO bookCreated = _bookBusiness.Create(book);
+            return CreatedAtAction(nameof(Get), new { CodBook = bookCreated.CodBook }, bookCreated);
         }
 
         // PUT api/<BookController>/5
         [HttpPut("{id}")]
-        public ActionResult<Book> Put(long id, [FromBody] Book book)
+        public ActionResult<BookVO> Put(long id, [FromBody] BookVO book)
         {
-            if (book == null) return BadRequest();
-            Book bookUpdated = _bookBusiness.Update(id, book);
-            return Ok(bookUpdated);
+            try
+            {
+                if (book == null) return BadRequest();
+                BookVO bookUpdated = _bookBusiness.Update(id, book);
+                return Ok(bookUpdated);
+            }
+            catch (Exception ex) {
+                return NotFound(new {status=false, message=ex.Message});
+            }
         }
 
         // DELETE api/<BookController>/5

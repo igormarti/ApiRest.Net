@@ -1,56 +1,56 @@
-﻿using RestApiWithDontNet.Models;
+﻿using RestApiWithDontNet.Data.Converter.Impl;
+using RestApiWithDontNet.Data.VO;
+using RestApiWithDontNet.Models;
 using RestApiWithDontNet.Repository;
 
 namespace RestApiWithDontNet.Business.Impl
 {
     public class BookBusiness : IBookBusiness
     {
-        private IBookRepository _bookRepository;
+        private readonly IBookRepository _bookRepository;
+        private readonly BookParser _bookParser;
 
-        public BookBusiness(IBookRepository bookRepository) {
+        public BookBusiness(IBookRepository bookRepository, BookParser bookParser) {
             _bookRepository = bookRepository;
+            _bookParser = bookParser;
         }
 
-        public Book FindById(long id)
+        public BookVO FindById(long id)
         {
             Book book = _bookRepository.FindById(id);
             if (book == null) {
                 throw new Exception("Book não encontrado.");
             }
-            return book;
+            return _bookParser.Parse(book);
         }
 
-        public List<Book> FindAll()
+        public List<BookVO> FindAll()
         {
-            return _bookRepository.FindAll();
+            return _bookParser.Parse(_bookRepository.FindAll());
         }
 
-        public Book Create(Book book)
+        public BookVO Create(BookVO book)
         {
             try
             {
-                return _bookRepository.Create(book);
+                return _bookParser.Parse(_bookRepository.Create(_bookParser.Parse(book)));
             } catch (Exception)
             {
                 throw;
             }
         }
 
-        public Book Update(long id, Book book)
+        public BookVO Update(long id, BookVO book)
         {
-            try
-            {
-                Book bookOld = _bookRepository.FindById(id);
 
-                if (bookOld == null) { 
-                    throw new Exception("Book não encontrado");
-                }
+            Book bookOld = _bookRepository.FindById(id);
+
+            if (bookOld == null) { 
+                throw new Exception("Book não encontrado");
+            }
                 
-                return _bookRepository.Update(id, book, bookOld);
-            }
-            catch (Exception) {
-                throw;
-            }
+            return _bookParser.Parse(_bookRepository.Update(id, _bookParser.Parse(book), bookOld));
+
         }
 
         public void Delete(long id)

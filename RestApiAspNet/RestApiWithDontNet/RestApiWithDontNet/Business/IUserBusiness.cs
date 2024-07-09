@@ -1,16 +1,17 @@
-﻿using RestApiWithDontNet.Models;
+﻿using RestApiWithDontNet.Data.VO;
+using RestApiWithDontNet.Models;
 
 namespace RestApiWithDontNet.Business
 {
     public interface IUserBusiness
     {
-        User Create(User user);
+        UserVO Create(UserVO user);
 
-        User Update(long id, User user);
+        UserVO Update(long id, UserVO user);
 
-        User FindById(long id);
+        UserVO FindById(long id);
 
-        List<User> FindAll();
+        List<UserVO> FindAll();
 
         void Delete(long id);
     }

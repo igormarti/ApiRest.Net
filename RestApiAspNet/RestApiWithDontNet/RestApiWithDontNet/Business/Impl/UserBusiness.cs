@@ -1,42 +1,48 @@
-﻿using RestApiWithDontNet.Models;
+﻿using RestApiWithDontNet.Data.Converter.Impl;
+using RestApiWithDontNet.Data.VO;
+using RestApiWithDontNet.Models;
 using RestApiWithDontNet.Repository;
 
 namespace RestApiWithDontNet.Business.Impl
 {
     public class UserBusiness : IUserBusiness
     {
-        private IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly UserParser _userParser;
 
-        public UserBusiness(IUserRepository userRepository) {
+        public UserBusiness(IUserRepository userRepository, UserParser userParser) {
             _userRepository = userRepository;
+            _userParser = userParser;
         }
 
-        public User FindById(long id)
+        public UserVO FindById(long id)
         {
             User user = _userRepository.FindById(id);
             if (user == null) {
                 throw new Exception("Usuário não encontrado.");
             }
-            return user;
+            return _userParser.Parse(user);
         }
 
-        public List<User> FindAll()
+        public List<UserVO> FindAll()
         {
-            return _userRepository.FindAll();
+            return _userParser.Parse(_userRepository.FindAll());
         }
 
-        public User Create(User user)
+        public UserVO Create(UserVO userVo)
         {
             try
             {
-                return _userRepository.Create(user);
+                User userEntity = _userParser.Parse(userVo); 
+                User user = _userRepository.Create(userEntity);
+                return _userParser.Parse(user);
             } catch (Exception)
             {
                 throw;
             }
         }
 
-        public User Update(long id, User user)
+        public UserVO Update(long id, UserVO user)
         {
             try
             {
@@ -45,8 +51,11 @@ namespace RestApiWithDontNet.Business.Impl
                 if (userOld == null) { 
                     throw new Exception("Usuário não encontrado");
                 }
+
+                User newUser = _userParser.Parse(user);
                 
-                return _userRepository.Update(id, user, userOld);
+                User userEntity = _userRepository.Update(id, newUser, userOld);
+                return _userParser.Parse(userEntity);
             }
             catch (Exception) {
                 throw;

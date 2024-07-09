@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RestApiWithDontNet.Models;
 using RestApiWithDontNet.Business;
+using RestApiWithDontNet.Data.VO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,16 +26,16 @@ namespace RestApiWithDontNet.Controllers
 
         // GET: api/<UserController>
         [HttpGet]
-        public ActionResult<List<User>> Get()
+        public ActionResult<List<UserVO>> Get()
         {
-            List<User> users = _userBusiness.FindAll();
+            List<UserVO> users = _userBusiness.FindAll();
 
             return Ok(users);
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public ActionResult<User> Get(int id)
+        public ActionResult<UserVO> Get(int id)
         {
             try
             {
@@ -47,19 +48,19 @@ namespace RestApiWithDontNet.Controllers
 
         // POST api/<UserController>
         [HttpPost]
-        public ActionResult<User> Post([FromBody] User user)
+        public ActionResult<UserVO> Post([FromBody] UserVO user)
         {
             if (user == null) return BadRequest();
-            User userCreated = _userBusiness.Create(user);
-            return CreatedAtAction(nameof(Get), new { id = userCreated.Id }, userCreated);
+            UserVO userCreated = _userBusiness.Create(user);
+            return CreatedAtAction(nameof(Get), new { CodUser = userCreated.CodUser }, userCreated);
         }
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public ActionResult<User> Put(long id, [FromBody] User user)
+        public ActionResult<UserVO> Put(long id, [FromBody] UserVO user)
         {
             if (user == null) return BadRequest();
-            User userUpdated = _userBusiness.Update(id, user);
+            UserVO userUpdated = _userBusiness.Update(id, user);
             return Ok(userUpdated);
         }
 
