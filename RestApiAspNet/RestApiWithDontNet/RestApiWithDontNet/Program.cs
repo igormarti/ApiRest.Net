@@ -1,5 +1,6 @@
 using EvolveDb;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using MySqlConnector;
 using RestApiWithDontNet.Business;
 using RestApiWithDontNet.Business.Impl;
@@ -8,6 +9,7 @@ using RestApiWithDontNet.Models.Context;
 using RestApiWithDontNet.Repository;
 using RestApiWithDontNet.Repository.Impl;
 using Serilog;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,15 @@ if(builder.Environment.IsDevelopment() && strConn!=null)
 {
     migrateDataBase(strConn);
 }
+
+// Content Negociation Config
+builder.Services.AddMvc(option =>
+{
+    option.RespectBrowserAcceptHeader = true;
+    option.FormatterMappings.SetMediaTypeMappingForFormat("xml", "application/xml");
+    option.FormatterMappings.SetMediaTypeMappingForFormat("json", "application/json");
+}).AddXmlSerializerFormatters();
+
 
 // Versioning Api
 builder.Services.AddApiVersioning();
