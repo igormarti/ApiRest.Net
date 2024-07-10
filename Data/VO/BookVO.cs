@@ -1,12 +1,16 @@
-﻿namespace RestApiWithDontNet.Data.VO
+﻿using RestApiWithDontNet.Hypermedia;
+using RestApiWithDontNet.Hypermedia.Abstract;
+
+namespace RestApiWithDontNet.Data.VO
 {
-    public class BookVO
+    public class BookVO: ISupportsHyperMedia
     {
         public long CodBook { get; set; }
         public string TitleBook { get; set; }
         public string AuthorBook { get; set; }
         public decimal PriceBook { get; set; }
         public string PublishDateBook { get; set; }
+        public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
 
         public BookVO(){}
 

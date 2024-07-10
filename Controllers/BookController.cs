@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestApiWithDontNet.Models;
 using RestApiWithDontNet.Business;
 using RestApiWithDontNet.Data.VO;
+using RestApiWithDontNet.Hypermedia.Filters;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,6 +27,7 @@ namespace RestApiWithDontNet.Controllers
 
         // GET: api/<BookController>
         [HttpGet]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<List<BookVO>> Get()
         {
             List<BookVO> books = _bookBusiness.FindAll();
@@ -35,6 +37,7 @@ namespace RestApiWithDontNet.Controllers
 
         // GET api/<BookController>/5
         [HttpGet("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<BookVO> Get(int id)
         {
             try
@@ -48,6 +51,7 @@ namespace RestApiWithDontNet.Controllers
 
         // POST api/<BookController>
         [HttpPost]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<BookVO> Post([FromBody] BookVO book)
         {
             if (book == null) return BadRequest();
@@ -57,6 +61,7 @@ namespace RestApiWithDontNet.Controllers
 
         // PUT api/<BookController>/5
         [HttpPut("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<BookVO> Put(long id, [FromBody] BookVO book)
         {
             try

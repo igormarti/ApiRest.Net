@@ -1,15 +1,15 @@
 using EvolveDb;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Net.Http.Headers;
 using MySqlConnector;
 using RestApiWithDontNet.Business;
 using RestApiWithDontNet.Business.Impl;
 using RestApiWithDontNet.Data.Converter.Impl;
+using RestApiWithDontNet.Hypermedia.Enricher;
+using RestApiWithDontNet.Hypermedia.Filters;
 using RestApiWithDontNet.Models.Context;
 using RestApiWithDontNet.Repository;
 using RestApiWithDontNet.Repository.Impl;
 using Serilog;
-using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +38,14 @@ builder.Services.AddMvc(option =>
 }).AddXmlSerializerFormatters();
 
 
+// HATEOS Filter
+var filterOptions = new HyperMediaFilterOptions();
+filterOptions.ContentResponseEnricherList.Add(new UserEnricher());
+filterOptions.ContentResponseEnricherList.Add(new BookEnricher());
+
+// Enrich Dependency Injection
+builder.Services.AddSingleton(filterOptions);
+
 // Versioning Api
 builder.Services.AddApiVersioning();
 
@@ -65,6 +73,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapControllerRoute("DefaultApi", "v{version=apiVersion}/{controller=values}/{id?}");
 
 app.Run();
 

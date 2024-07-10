@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestApiWithDontNet.Models;
 using RestApiWithDontNet.Business;
 using RestApiWithDontNet.Data.VO;
+using RestApiWithDontNet.Hypermedia.Filters;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,6 +27,8 @@ namespace RestApiWithDontNet.Controllers
 
         // GET: api/<UserController>
         [HttpGet]
+        [TypeFilter(typeof(HyperMediaFilter))]
+
         public ActionResult<List<UserVO>> Get()
         {
             List<UserVO> users = _userBusiness.FindAll();
@@ -35,11 +38,12 @@ namespace RestApiWithDontNet.Controllers
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<UserVO> Get(int id)
         {
             try
             {
-                return _userBusiness.FindById(id);
+                return Ok(_userBusiness.FindById(id));
             }
             catch (Exception ex) { 
                 return NotFound(new {status = false, message = ex.Message});
@@ -48,6 +52,8 @@ namespace RestApiWithDontNet.Controllers
 
         // POST api/<UserController>
         [HttpPost]
+        [TypeFilter(typeof(HyperMediaFilter))]
+
         public ActionResult<UserVO> Post([FromBody] UserVO user)
         {
             if (user == null) return BadRequest();
@@ -57,6 +63,8 @@ namespace RestApiWithDontNet.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
+        [TypeFilter(typeof(HyperMediaFilter))]
+
         public ActionResult<UserVO> Put(long id, [FromBody] UserVO user)
         {
             if (user == null) return BadRequest();

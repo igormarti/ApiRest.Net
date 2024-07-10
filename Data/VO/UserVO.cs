@@ -1,13 +1,18 @@
 ﻿
+using RestApiWithDontNet.Hypermedia;
+using RestApiWithDontNet.Hypermedia.Abstract;
+
 namespace RestApiWithDontNet.Data.VO
 {
-    public class UserVO
+    public class UserVO:ISupportsHyperMedia
     {
         public long CodUser {  get; set; }
         public string NameUser { get; set; }
         public string EmailUser { get; set; }
         public string AddressUser { get; set; }
         public string GenderUser { get; set; }
+        public List<HyperMediaLink> Links { get ; set ; } = new List<HyperMediaLink>();
+
 
         public UserVO() { }
         public UserVO(int codUser, string nameUser, string emailUser, string addressUser, string genderUser)
