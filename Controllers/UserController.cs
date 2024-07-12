@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RestApiWithDontNet.Models;
 using RestApiWithDontNet.Business;
 using RestApiWithDontNet.Data.VO;
 using RestApiWithDontNet.Hypermedia.Filters;
@@ -11,6 +11,7 @@ namespace RestApiWithDontNet.Controllers
 {
     [ApiVersion("1")]
     [Route("v{version:apiVersion}/api/users")]
+    [Authorize("Bearer")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -27,6 +28,12 @@ namespace RestApiWithDontNet.Controllers
 
         // GET: api/<UserController>
         [HttpGet]
+        [ProducesResponseType( 200 , Type= typeof(List<UserVO>) )]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public ActionResult<List<UserVO>> Get()
@@ -38,6 +45,12 @@ namespace RestApiWithDontNet.Controllers
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(UserVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<UserVO> Get(int id)
         {
@@ -52,6 +65,12 @@ namespace RestApiWithDontNet.Controllers
 
         // POST api/<UserController>
         [HttpPost]
+        [ProducesResponseType(200, Type = typeof(UserVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public ActionResult<UserVO> Post([FromBody] UserVO user)
@@ -63,6 +82,12 @@ namespace RestApiWithDontNet.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
+        [ProducesResponseType(200, Type = typeof(UserVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
 
         public ActionResult<UserVO> Put(long id, [FromBody] UserVO user)
@@ -74,6 +99,12 @@ namespace RestApiWithDontNet.Controllers
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         public ActionResult Delete(int id)
         {
             try

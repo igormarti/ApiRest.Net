@@ -4,6 +4,7 @@ using RestApiWithDontNet.Models;
 using RestApiWithDontNet.Business;
 using RestApiWithDontNet.Data.VO;
 using RestApiWithDontNet.Hypermedia.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,6 +12,7 @@ namespace RestApiWithDontNet.Controllers
 {
     [ApiVersion("1")]
     [Route("v{version:apiVersion}/api/books")]
+    [Authorize("Bearer")]
     [ApiController]
     public class BookController : ControllerBase
     {
@@ -27,6 +29,12 @@ namespace RestApiWithDontNet.Controllers
 
         // GET: api/<BookController>
         [HttpGet]
+        [ProducesResponseType(200, Type = typeof(List<BookVO>))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<List<BookVO>> Get()
         {
@@ -37,6 +45,12 @@ namespace RestApiWithDontNet.Controllers
 
         // GET api/<BookController>/5
         [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(BookVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<BookVO> Get(int id)
         {
@@ -51,6 +65,12 @@ namespace RestApiWithDontNet.Controllers
 
         // POST api/<BookController>
         [HttpPost]
+        [ProducesResponseType(200, Type = typeof(BookVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<BookVO> Post([FromBody] BookVO book)
         {
@@ -61,6 +81,12 @@ namespace RestApiWithDontNet.Controllers
 
         // PUT api/<BookController>/5
         [HttpPut("{id}")]
+        [ProducesResponseType(200, Type = typeof(BookVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
         public ActionResult<BookVO> Put(long id, [FromBody] BookVO book)
         {
@@ -77,6 +103,12 @@ namespace RestApiWithDontNet.Controllers
 
         // DELETE api/<BookController>/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         public ActionResult Delete(int id)
         {
             try

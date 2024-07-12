@@ -1,0 +1,2 @@
+INSERT INTO `users_auth`(user_name, password, full_name, refresh_token, refresh_token_expiry_time)
+VALUES("igorm", "289160db0d9f39f9ae1754c4ec9c16f90b50e32e09c5fb5481ae642b3d3d1a36", "Igor Martins", "lzVOoLlBoTbcQrh/e16/aIj+4p6C67lLdDbBRMsjE=',", "2024-10-10 15:00:00");

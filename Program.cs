@@ -1,17 +1,25 @@
 using EvolveDb;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MySqlConnector;
 using RestApiWithDontNet.Business;
 using RestApiWithDontNet.Business.Impl;
+using RestApiWithDontNet.Configurations;
 using RestApiWithDontNet.Data.Converter.Impl;
 using RestApiWithDontNet.Hypermedia.Enricher;
 using RestApiWithDontNet.Hypermedia.Filters;
 using RestApiWithDontNet.Models.Context;
 using RestApiWithDontNet.Repository;
 using RestApiWithDontNet.Repository.Impl;
+using RestApiWithDontNet.Services.Contracts;
+using RestApiWithDontNet.Services.Impl;
 using Serilog;
+using System.Text;
 
 const string AppName = "Rest Api Application";
 const string AppVersion = "v1";
@@ -37,6 +45,49 @@ builder.Services.AddSwaggerGen(c =>
         }
      );
 });
+
+// Token Configuration
+var tokenConfiguration = new TokenConfiguration();
+new ConfigureFromConfigurationOptions<TokenConfiguration>(
+        builder.Configuration.GetSection("TokenConfiguration")
+ ).Configure(tokenConfiguration);
+builder.Services.AddSingleton(tokenConfiguration);
+
+// Authentication Configuration
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = tokenConfiguration.Issuer,
+        ValidAudience = tokenConfiguration.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfiguration.Secret))
+    };
+});
+// Authorization Configuration
+builder.Services.AddAuthorization(auth =>
+{
+    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder() 
+            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+            .RequireAuthenticatedUser().Build()
+        );
+});
+
+// CORS Configuration
+builder.Services.AddCors(options => 
+    options.AddDefaultPolicy(b => 
+        b.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+    )
+);
 
 // DataBase Connection
 var strConn = builder.Configuration["MySQLConnection:MySQLConnectionString"];
@@ -71,20 +122,26 @@ builder.Services.AddSingleton(filterOptions);
 // Versioning Api
 builder.Services.AddApiVersioning();
 
-// Services Dependency Injection
+// Business Dependency Injection
 builder.Services.
      AddScoped<IUserBusiness, UserBusiness>()
-    .AddScoped<IBookBusiness, BookBusiness>();
+    .AddScoped<IBookBusiness, BookBusiness>()
+    .AddScoped<ILoginBusiness, LoginBusiness>();
+
+// Service Dependency Injection
+builder.Services.AddTransient<ITokenService, TokenService>();
 
 // Repositories Dependency Injection
 builder.Services.
     AddScoped<IUserRepository, UserRepository>()
-   .AddScoped<IBookRepository, BookRepository>();
+   .AddScoped<IBookRepository, BookRepository>()
+   .AddScoped<IUserAuthRepository, UserAuthRepository>();
 
 // VO Dependency Injection
 builder.Services.
     AddScoped<UserParser>()
-    .AddScoped<BookParser>();
+    .AddScoped<BookParser>()
+    .AddScoped<UserAuthParser>();
 
 var app = builder.Build();
 
@@ -92,10 +149,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
-app.MapControllers();
-app.MapControllerRoute("DefaultApi", "v{version=apiVersion}/{controller=values}/{id?}");
+app.UseCors();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -105,6 +159,11 @@ app.UseSwaggerUI(c =>
 var option = new RewriteOptions();
 option.AddRedirect("^$", "swagger");
 app.UseRewriter(option);
+
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapControllerRoute("DefaultApi", "v{version=apiVersion}/{controller=values}/{id?}");
 
 app.Run();
 

@@ -1,5 +1,4 @@
 ﻿using RestApiWithDontNet.Data.VO;
-using RestApiWithDontNet.Models;
 
 namespace RestApiWithDontNet.Business
 {
