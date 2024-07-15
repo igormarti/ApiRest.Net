@@ -16,5 +16,9 @@ namespace RestApiWithDontNet.Repository.Generic
         void Delete(long id);
 
         bool Exists(long id);
+
+        List<T> findWithPageSearch(string query);
+
+        int GetCount(string query);
     }
 }

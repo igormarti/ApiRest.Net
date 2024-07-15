@@ -36,9 +36,17 @@ namespace RestApiWithDontNet.Controllers
         [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
 
-        public ActionResult<List<UserVO>> Get()
+        public ActionResult<List<UserVO>> Get([FromQuery] string ?name)
         {
-            List<UserVO> users = _userBusiness.FindAll();
+            List<UserVO> users;
+            if (!string.IsNullOrEmpty(name))
+            {
+                users = _userBusiness.FindByName(name);
+            }
+            else
+            {
+                users = _userBusiness.FindAll();
+            }
 
             return Ok(users);
         }
@@ -114,6 +122,27 @@ namespace RestApiWithDontNet.Controllers
             }
             catch (Exception ex) { 
                 return NotFound(new {status = false, message= ex.Message});
+            }
+        }
+
+        // DELETE api/<UserController>/5
+        [HttpPatch("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
+        public ActionResult Patch(int id)
+        {
+            try
+            {
+                _userBusiness.Disable(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { status = false, message = ex.Message });
             }
         }
     }

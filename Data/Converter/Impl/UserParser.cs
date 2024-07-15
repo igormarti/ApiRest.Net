@@ -14,7 +14,8 @@ namespace RestApiWithDontNet.Data.Converter.Impl
                 NameUser = input.Name,
                 EmailUser = input.Email,
                 AddressUser = input.Address,
-                GenderUser = input.Gender != null ? input.Gender: "Not Defined"
+                GenderUser = input.Gender != null ? input.Gender: "Not Defined",
+                Enabled = input.Enabled,
             };
         }
 
@@ -28,6 +29,7 @@ namespace RestApiWithDontNet.Data.Converter.Impl
                 Email=input.EmailUser,
                 Address=input.AddressUser,
                 Gender=input.GenderUser,
+                Enabled=input.Enabled,
             };
         }
 

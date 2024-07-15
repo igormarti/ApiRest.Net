@@ -1,5 +1,6 @@
 ﻿using RestApiWithDontNet.Data.Converter.Impl;
 using RestApiWithDontNet.Data.VO;
+using RestApiWithDontNet.Hypermedia.Utils;
 using RestApiWithDontNet.Models;
 using RestApiWithDontNet.Repository;
 
@@ -78,6 +79,58 @@ namespace RestApiWithDontNet.Business.Impl
             {
                 throw;
             }
+        }
+
+        public void Disable(long id)
+        {
+            try
+            {
+                if (!_userRepository.Disable(id)) throw new Exception("Error try disable user");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<UserVO?> FindByName(string name)
+        {
+            var users = _userRepository.findByName(name);
+
+            if (users.Count < 1||users==null) return null;
+
+            return _userParser.Parse(users);
+        }
+
+        public PagedSearchVO<UserVO> findWithPagedSearch(string name, string sortDirection, int pageSize, int page)
+        {
+        
+            var sort = (!string.IsNullOrWhiteSpace(sortDirection)&&!sortDirection.Equals("desc")) 
+                ? "asc" : "desc";
+            var size = (pageSize < 1) ? 10 : pageSize;
+            var offset = page > 0 ? (page - 1) * size : 0;
+
+            string conditionName = $" AND  u.name LIKE '%{name}%' ";
+            string query = @"SELECT * FROM users u WHERE 1 = 1";
+
+            if (!string.IsNullOrWhiteSpace(name)) query += conditionName ;
+
+            query += $" ORDER BY u.name ASC LIMIT {size} OFFSET {offset}";
+
+            string countQuery = @"SELECT COUNT(*) FROM users u WHERE 1 = 1";
+            if (!string.IsNullOrWhiteSpace(name)) countQuery += conditionName;
+
+            var users = _userRepository.findWithPageSearch(query);
+            int totalResults = _userRepository.GetCount(countQuery);
+
+            return new PagedSearchVO<UserVO>
+            {
+                CurrentPage = page,
+                TotalResults = size,
+                SortDirections = sort,
+                List = _userParser.Parse(users),
+                PageSize = size,
+            };
         }
     }
 }

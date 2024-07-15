@@ -12,12 +12,14 @@
     <None Remove="db\migrations\V3__Create_Table_Books.sql" />
     <None Remove="db\migrations\V5__Create_Table_UsersAuth.sql" />
     <None Remove="db\migrations\V7__Change_Column_RefreshToken_To_AllowNull.sql" />
+    <None Remove="db\migrations\V8__Add_Column_Enabled_To_Users_Table.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="db\dataset\V6__Populate_Table_UsersAuth.sql" />
     <Content Include="db\dataset\V4__Populate_Table_Books.sql" />
     <Content Include="db\dataset\V2__Populate_Table_Users.sql" />
+    <Content Include="db\migrations\V8__Add_Column_Enabled_To_Users_Table.sql" />
     <Content Include="db\migrations\V7__Change_Column_RefreshToken_To_AllowNull.sql" />
     <Content Include="db\migrations\V5__Create_Table_UsersAuth.sql" />
     <Content Include="db\migrations\V3__Create_Table_Books.sql" />

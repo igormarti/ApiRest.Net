@@ -1,4 +1,5 @@
 ﻿using RestApiWithDontNet.Data.VO;
+using RestApiWithDontNet.Hypermedia.Utils;
 
 namespace RestApiWithDontNet.Business
 {
@@ -13,5 +14,11 @@ namespace RestApiWithDontNet.Business
         List<UserVO> FindAll();
 
         void Delete(long id);
+
+        void Disable(long id);
+
+        List<UserVO> FindByName(string name);
+
+        PagedSearchVO<UserVO> findWithPagedSearch(string name, string sortDirection, int pageSize, int page);
     }
 }
