@@ -125,8 +125,8 @@ namespace RestApiWithDontNet.Business.Impl
 
             return new PagedSearchVO<UserVO>
             {
-                CurrentPage = page,
-                TotalResults = size,
+                CurrentPage = page==0?1:page,
+                TotalResults = totalResults,
                 SortDirections = sort,
                 List = _userParser.Parse(users),
                 PageSize = size,

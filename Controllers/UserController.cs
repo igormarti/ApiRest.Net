@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestApiWithDontNet.Business;
 using RestApiWithDontNet.Data.VO;
 using RestApiWithDontNet.Hypermedia.Filters;
+using RestApiWithDontNet.Hypermedia.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -36,17 +37,15 @@ namespace RestApiWithDontNet.Controllers
         [ProducesResponseType(500)]
         [TypeFilter(typeof(HyperMediaFilter))]
 
-        public ActionResult<List<UserVO>> Get([FromQuery] string ?name)
+        public ActionResult<PagedSearchVO<UserVO>> Get(
+            [FromQuery] string sort = "asc",
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int page = 1,
+            [FromQuery] string name = ""
+
+        )
         {
-            List<UserVO> users;
-            if (!string.IsNullOrEmpty(name))
-            {
-                users = _userBusiness.FindByName(name);
-            }
-            else
-            {
-                users = _userBusiness.FindAll();
-            }
+            PagedSearchVO<UserVO> users = _userBusiness.findWithPagedSearch(name, sort, pageSize, page);
 
             return Ok(users);
         }
