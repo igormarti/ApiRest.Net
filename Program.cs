@@ -1,8 +1,11 @@
+using Asp.Versioning;
 using EvolveDb;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -31,6 +34,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Add swagger support
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc(AppVersion,
@@ -118,6 +122,7 @@ filterOptions.ContentResponseEnricherList.Add(new BookEnricher());
 
 // Enrich Dependency Injection
 builder.Services.AddSingleton(filterOptions);
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Versioning Api
 builder.Services.AddApiVersioning();
@@ -126,7 +131,8 @@ builder.Services.AddApiVersioning();
 builder.Services.
      AddScoped<IUserBusiness, UserBusiness>()
     .AddScoped<IBookBusiness, BookBusiness>()
-    .AddScoped<ILoginBusiness, LoginBusiness>();
+    .AddScoped<ILoginBusiness, LoginBusiness>()
+    .AddScoped<IFileBusiness, FileBusiness>();
 
 // Service Dependency Injection
 builder.Services.AddTransient<ITokenService, TokenService>();
